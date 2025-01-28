@@ -1,0 +1,31 @@
+[project]
+name = "llm-azure-tts"
+version = "0.1.1"
+description = "Text-to-speech using the Azure OpenAI TTS API"
+readme = "README.md"
+authors = [{name = "Anwar Ziani"}]
+license = {text = "Apache-2.0"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+requires-python = ">=3.9"
+dependencies = [
+    "llm",
+    "httpx"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/zianwar/llm-azure-tts"
+Changelog = "https://github.com/zianwar/llm-azure-tts/releases"
+Issues = "https://github.com/zianwar/llm-azure-tts/issues"
+CI = "https://github.com/zianwar/llm-azure-tts/actions"
+
+[project.entry-points.llm]
+azure_tts = "llm_azure_tts"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-httpx"]
