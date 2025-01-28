@@ -5,7 +5,7 @@
 [![Tests](https://github.com/zianwar/llm-azure-tts/actions/workflows/test.yml/badge.svg)](https://github.com/zianwar/llm-azure-tts/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/zianwar/llm-azure-tts/blob/main/LICENSE)
 
-Run transcriptions using the OpenAI Whisper API
+Text-to-speech using the Azure OpenAI TTS API
 
 ## Installation
 
@@ -17,32 +17,27 @@ llm install llm-azure-tts
 
 ## Usage
 
-The plugin adds a new command, `llm whisper-api`. Use it like this:
+The plugin adds a new command, `llm azure-tts`. Use it like this:
 
 ```bash
-llm whisper-api audio.mp3
+llm azure-tts "Hello" --output audio.mp3
 ```
 
-The transcribed audio will be output directly to standard output as plain text.
+The synthesized text will be output directly to the specified location.
 
-The plugin will use the OpenAI API key you have already configured using:
+For full options, run `llm azure-tts --help`.
+
+The plugin will use the API key configured using:
 
 ```bash
-llm keys set openai
+llm keys set azure-tts
 # Paste key here
 ```
 
 You can also pass an explicit API key using `--key` like this:
 
 ```bash
-llm whisper-api audio.mp3 --key $OPENAI_API_KEY
-```
-
-You can pipe data to the tool if you specify `-` as a filename:
-
-```bash
-curl -s 'https://static.simonwillison.net/static/2024/russian-pelican-in-spanish.mp3' \
-  | llm whisper-api -
+llm azure-tts "Hello" --key $AZURE_OPENAI_TTS_API_KEY --output audio.mp3
 ```
 
 ## Development
