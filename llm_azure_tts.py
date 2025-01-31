@@ -1,3 +1,4 @@
+import sys
 import time
 import os
 import click
@@ -9,15 +10,8 @@ import yaml
 @llm.hookimpl
 def register_commands(cli):
     @cli.command()
-    @click.argument("args", nargs=-1)
+    @click.argument("text", type=click.STRING, default="-")
     @click.option("api_key", "--key", help="API key to use")
-    @click.option(
-        "output_file",
-        "--output",
-        type=click.Path(),
-        default="audio.mp3",
-        help="Output file path",
-    )
     @click.option(
         "voice",
         "--voice",
@@ -25,7 +19,14 @@ def register_commands(cli):
         default="onyx",
         help="Voice to use, available: alloy, echo, fable, onyx, nova, and shimmer",
     )
-    def azure_tts(args, voice, api_key, output_file):
+    @click.option(
+        "output",
+        "--output",
+        type=click.File("wb"),
+        default=sys.stdout,
+        help="Output file path",
+    )
+    def azure_tts(text, api_key, voice, output):
         """
         Convert text to speech using the Azure Text-to-Speech API
 
@@ -35,8 +36,15 @@ def register_commands(cli):
             llm azure-tts "Hello there!" --output audio.mp3
         """
 
+        if text == "-":
+            text = click.get_text_stream("stdin").read()
+
+        if not text:
+            raise click.UsageError(
+                "Text input is required. Pass text as argument or pipe it from stdin."
+            )
+
         config = get_config()
-        text = " ".join(args)
         # Extract environment variables
         azure_api_base = os.getenv("AZURE_OPENAI_TTS_API_BASE", config["api_base"])
         azure_api_version = os.getenv(
@@ -60,9 +68,11 @@ def register_commands(cli):
                 azure_deployment_name,
                 key,
             )
-            with open(output_file, "wb") as f:
-                f.write(audio_content)
-            click.echo(output_file)
+
+            if output is sys.stdout:
+                output.buffer.write(audio_content)
+            else:
+                output.write(audio_content)
 
         except httpx.HTTPError as e:
             if e.response.status_code == 429:  # Too Many Requests
