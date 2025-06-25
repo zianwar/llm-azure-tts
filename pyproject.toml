@@ -1,6 +1,6 @@
 [project]
 name = "llm-azure-tts"
-version = "0.1.2"
+version = "0.2.0"
 description = "Text-to-speech using the Azure OpenAI TTS API"
 readme = "README.md"
 authors = [{name = "Anwar Ziani"}]
